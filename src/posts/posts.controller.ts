@@ -6,9 +6,7 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
-  HttpCode,
-  HttpStatus,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -18,22 +16,21 @@ import { UpdatePostDto } from './dto/update-post.dto';
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    console.log(createPostDto);
-    return this.postsService.create(createPostDto);
+  @Post(`:authorID`)
+  create(
+    @Body() createPostDto: CreatePostDto,
+    @Param('authorID', ParseIntPipe) authorID: number,
+  ) {
+    return this.postsService.create(createPostDto, authorID);
   }
 
   @Get()
-  findAll(@Query() queryObject: any) {
-    console.log(queryObject);
+  findAll() {
     return this.postsService.findAll();
   }
 
-  @Get(':id/:age')
-  @HttpCode(HttpStatus.ACCEPTED)
-  findOne(@Param('id') id: string, @Param('age') age: String) {
-    console.log(`id is: ${id}, age is: ${age}`);
+  @Get(':id')
+  findOne(@Param('id') id: string) {
     return this.postsService.findOne(+id);
   }
 
