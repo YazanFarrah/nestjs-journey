@@ -16,7 +16,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Post(`:authorID`)
+  @Post(':authorID')
   create(
     @Body() createPostDto: CreatePostDto,
     @Param('authorID', ParseIntPipe) authorID: number,

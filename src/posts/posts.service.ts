@@ -7,31 +7,21 @@ import { Post } from './entities/post.entity';
 @Injectable()
 export class PostsService {
   constructor(private readonly userService: UsersService) {}
-
   posts: Post[] = [];
-
   create(createPostDto: CreatePostDto, authorID: number) {
-    try {
-      const user = this.userService.findOne(authorID);
+    const user = this.userService.findOne(authorID);
+    if (!user)
+      throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
+    const post = new Post(createPostDto);
 
-      if (!user)
-        throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    post.author = user;
 
-      const post = new Post(createPostDto);
-
-      post.addAuthor(user);
-
-      this.posts.push(post);
-      return {
-        statusCode: HttpStatus.CREATED,
-        message: 'Post created successfully',
-      };
-    } catch (error) {
-      return {
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: error,
-      };
-    }
+    this.posts.push(post);
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Post was created successfully',
+      data: post,
+    };
   }
 
   findAll() {

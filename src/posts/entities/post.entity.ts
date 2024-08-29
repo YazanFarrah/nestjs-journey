@@ -7,7 +7,7 @@ export class Post {
 
   text: string;
 
-  image: string; //URL
+  image: string; //ur;
 
   createdAt: string;
 
@@ -18,10 +18,9 @@ export class Post {
   }
 
   updateOne(updatePostDto: UpdatePostDto) {
-    Object.assign(this, updatePostDto);
+    Object.assign(this, { ...this, ...updatePostDto });
   }
-
-  addAuthor(author: User) {
+  addAuthor(author) {
     this.author = author;
   }
 }

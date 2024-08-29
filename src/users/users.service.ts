@@ -10,16 +10,18 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     const { password } = createUserDto;
     let length = this.users.length;
-    const hashedPassword = await bcrypt.hash(password, 11);
+    let hashedPassword = await bcrypt.hash(password, 11);
     const user = new User({
       ...createUserDto,
       id: length++,
       password: hashedPassword,
     });
     this.users.push(user);
+
     return {
       statusCode: HttpStatus.CREATED,
-      message: 'User created successfully',
+      message: 'User was created successfully',
+      data: user,
     };
   }
 
@@ -28,23 +30,18 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return this.users.find((user) => {
-      return user.id == id;
-    });
+    return this.users.find((user) => user.id === id);
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    const user = this.findOne(id);
+    const user = this.users.find((user) => user.id === id);
     user.updateOne(updateUserDto);
-    return { data: user, message: 'Updated user successfully' };
+    return { data: user, message: 'User was updated successfully' };
   }
 
   remove(id: number) {
     const index = this.users.findIndex((user) => user.id === id);
-    if (index === -1) {
-      return { msg: 'No user found' };
-    }
-    const deletedUser = this.users.splice(index, 1)[0];
-    return { msg: `User ${deletedUser.username} was deleted successfully` };
+    this.users.splice(index, 1);
+    return 'User was deleted succesffuly';
   }
 }

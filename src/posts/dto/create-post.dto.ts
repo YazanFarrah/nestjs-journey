@@ -1,12 +1,15 @@
-import { IsNotEmpty, IsUrl, Length, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsUrl, MaxLength } from 'class-validator';
 
 export class CreatePostDto {
-  @Length(1, 2200)
+  @MaxLength(2200, { message: 'Text is too long' })
   @IsNotEmpty()
   text: string;
+
   @IsNotEmpty()
   @IsUrl()
   image: string;
+
   createdAt = new Date().toISOString();
+
   updatedAt = new Date().toISOString();
 }

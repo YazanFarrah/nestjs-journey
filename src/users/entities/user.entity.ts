@@ -4,11 +4,17 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 
 export class User {
   id: number;
+
   username: string;
+
   email: string;
+
   password: string;
+
   gender: Gender;
+
   birthday: string;
+
   city: string;
 
   constructor(createUserDto: CreateUserDto) {
@@ -16,6 +22,6 @@ export class User {
   }
 
   updateOne(updateUserDto: UpdateUserDto) {
-    Object.assign(this, updateUserDto);
+    Object.assign(this, { ...this, ...updateUserDto });
   }
 }
