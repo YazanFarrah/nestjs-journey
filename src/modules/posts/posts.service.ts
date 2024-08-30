@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/modules/users/users.service';
 import { Post } from './entities/post.entity';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class PostsService {
       throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
     const post = new Post(createPostDto);
 
-    post.author = user;
+    post.addAuthor(user);
 
     this.posts.push(post);
     return {

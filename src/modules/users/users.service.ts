@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -7,22 +7,19 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
   users: User[] = [];
-  async create(createUserDto: CreateUserDto) {
-    const { password } = createUserDto;
+
+  createUserForAuth(createUserDto: CreateUserDto) {
+    const { email } = createUserDto;
+    const user = this.findUserByEmail(email);
+    if (user)
+      throw new HttpException('Email already exists', HttpStatus.CONFLICT);
+
     let length = this.users.length;
-    let hashedPassword = await bcrypt.hash(password, 11);
-    const user = new User({
+    const createdUser = new User({
       ...createUserDto,
       id: length++,
-      password: hashedPassword,
     });
-    this.users.push(user);
-
-    return {
-      statusCode: HttpStatus.CREATED,
-      message: 'User was created successfully',
-      data: user,
-    };
+    this.users.push(createdUser);
   }
 
   findAll() {
@@ -43,5 +40,9 @@ export class UsersService {
     const index = this.users.findIndex((user) => user.id === id);
     this.users.splice(index, 1);
     return 'User was deleted succesffuly';
+  }
+
+  findUserByEmail(email: string) {
+    return this.users.find((user) => user.email == email);
   }
 }
