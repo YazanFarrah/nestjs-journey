@@ -29,7 +29,7 @@ export class AccessTokenGuard implements CanActivate {
         [context.getClass(), context.getHandler()],
       );
 
-      if(isPublic) return true;
+      if (isPublic) return true;
 
       const authorization = req.headers.authorization;
 
@@ -50,8 +50,8 @@ export class AccessTokenGuard implements CanActivate {
       return true;
     } catch (error) {
       throw new HttpException(
-        'You must be logged in first',
-        HttpStatus.UNAUTHORIZED,
+        error?.message ?? 'You must be logged in first',
+        error?.status ?? HttpStatus.UNAUTHORIZED,
       );
     }
   }
